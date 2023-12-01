@@ -13,6 +13,9 @@
 *.exp
 
 # Precompiled Headers
+#IDOTIC IDE
+.vscode
+
 *.gch
 *.pch
 
