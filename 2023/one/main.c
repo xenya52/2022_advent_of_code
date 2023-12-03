@@ -22,20 +22,20 @@ int main(int argc, char *argv[]) {
     char temp_last = 0;
     int sum = 0;
     int is_first_in = 0; //bool
-
+/*
     while (index != EOF) {
         index = fgetc(f_ptr);
         if(index == '\n') {
             printf("%s\n",cur_line);
         }
     }
-/*
+*/
     if(f_ptr != NULL) {
         while (index != EOF) {
             index = fgetc(f_ptr);
             
             if(index == '\n') {
-                sum += (temp_first - ASCIIDOWGRADE) * 10 + temp_last - ASCIIDOWGRADE;
+                sum += (temp_first - ASCII_DOWGRADE) * 10 + temp_last - ASCII_DOWGRADE;
                 is_first_in = 0;
             }
             else if(index <= '9' && index >= '0' && is_first_in == 1) {
@@ -51,7 +51,6 @@ int main(int argc, char *argv[]) {
     else {
         printf("Error: No file / Not able to open");
     }
-*/
     printf("%d",sum);
 
     fclose(f_ptr);
