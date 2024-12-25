@@ -11,4 +11,4 @@ I'll separate the problem into multible parts:
 # The rules
 l | r
 1. l must be printed before r
-2. So if i have 42|54 42|65 42|76 than the chain is valid if every number stands bevore 42
+2. So if i have 42|54 42|65 42|76 than the chain is valid if every number stands behind 42
