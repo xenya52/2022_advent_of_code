@@ -18,19 +18,37 @@ fn read_file_to_vec(path: &str) -> Vec<Vec<char>> {
     return row_vec;
 }
 
+fn find_guard(vec2D: &Vec<Vec<char>>) -> (usize, usize) {
+    let mut x: usize = 0;
+    let mut y: usize = 0;
+    for (i, row) in vec2D.iter().enumerate() {
+        for (j, col) in row.iter().enumerate() {
+            if *col == '^' {
+                x = j;
+                y = i;
+            }
+        }
+    }
+    return (x, y);
+}
+
 fn total_visited_distincts(vec2D: Vec<Vec<char>>) -> usize {
-    direction = vec![(-1, 0), (0, 1), (1, 0), (0, -1)];
-    current_direction = 0;
-    is_running: bool = true;
-    total_visited: usize = 0;
-    x_cur = 0;
-    y_cur = 0;
-    x_vec_len = vec2D[0].len();
-    y_vec_len = vec2D.len();
+    // direction explanation x = index 0 / y = index 1
+    let direction: Vec<(isize, isize)> = vec![(0, -1), (1, 0), (0, 1), (-1, 0)];
+    let x_vec_len: isize = vec2D[0].len() as isize;
+    let y_vec_len: isize = vec2D.len() as isize;
+
+    let mut total_visited: usize = 0;
+    let mut is_running: bool = true;
+    let mut current_direction: usize = 0;
+
+    let (x, y): (usize, usize) = find_guard(&vec2D);
+    let mut x_cur: isize = x.try_into().unwrap();
+    let mut y_cur: isize = y.try_into().unwrap();
 
     while is_running {
-        x_upcoming = x_cur + direction[current_direction].0;
-        y_upcoming = y_cur + direction[current_direction].1;
+        let x_upcoming: isize = x_cur + direction[current_direction].0;
+        let y_upcoming: isize = y_cur + direction[current_direction].1;
 
         // If the upcoming x is out of bounds, stop
         if x_upcoming < 0 || x_upcoming >= x_vec_len {
@@ -38,8 +56,14 @@ fn total_visited_distincts(vec2D: Vec<Vec<char>>) -> usize {
             break;
         }
 
+        // If the upcoming y is out of bounds, stop
+        if y_upcoming < 0 || y_upcoming >= y_vec_len {
+            is_running = false;
+            break;
+        }
+
         // If theres a block, rotate 90 degrees and move forward
-        if vec2D[y_upcoming][x_upcoming] == "#" {
+        if vec2D[y_upcoming as usize][x_upcoming as usize] == '#' {
             current_direction = (current_direction + 1) % 4;
             x_cur += direction[current_direction].0;
             y_cur += direction[current_direction].1;
@@ -48,7 +72,6 @@ fn total_visited_distincts(vec2D: Vec<Vec<char>>) -> usize {
             y_cur = y_upcoming;
         }
         total_visited += 1;
-
     }
     return total_visited;
 }
@@ -56,10 +79,6 @@ fn total_visited_distincts(vec2D: Vec<Vec<char>>) -> usize {
 fn main() {
     let path: &str = "./../input.txt";
     let vec2D: Vec<Vec<char>> = read_file_to_vec(path);
-    for row in vec2D {
-        for col in row {
-            print!("{}", col);
-        }
-        println!("");
-    }
+    let result: usize = total_visited_distincts(vec2D);
+    println!("{}", result)
 }
