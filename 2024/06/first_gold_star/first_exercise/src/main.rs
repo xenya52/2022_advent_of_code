@@ -18,31 +18,33 @@ fn read_file_to_vec(path: &str) -> Vec<Vec<char>> {
     return row_vec;
 }
 
-fn find_guard(vec2D: &Vec<Vec<char>>) -> (usize, usize) {
-    let mut x: usize = 0;
-    let mut y: usize = 0;
+fn find_guard(vec2D: &Vec<Vec<char>>) -> (usize, usize, usize) {
     for (i, row) in vec2D.iter().enumerate() {
         for (j, col) in row.iter().enumerate() {
             if *col == '^' {
-                x = j;
-                y = i;
+                return (j, i, 0);
+            } else if *col == '>' {
+                return (j, i, 1);
+            } else if *col == 'v' {
+                return (j, i, 2);
+            } else if *col == '<' {
+                return (j, i, 3);
             }
         }
     }
-    return (x, y);
+    panic!("Guard not found");
 }
 
-fn total_visited_distincts(vec2D: Vec<Vec<char>>) -> usize {
+fn total_visited_distincts(mut vec2D: Vec<Vec<char>>) -> usize {
     // direction explanation x = index 0 / y = index 1
     let direction: Vec<(isize, isize)> = vec![(0, -1), (1, 0), (0, 1), (-1, 0)];
     let x_vec_len: isize = vec2D[0].len() as isize;
     let y_vec_len: isize = vec2D.len() as isize;
 
-    let mut total_visited: usize = 0;
+    let mut total_visited: usize = 1; // Start with 1 because the guard is already visited
     let mut is_running: bool = true;
-    let mut current_direction: usize = 0;
 
-    let (x, y): (usize, usize) = find_guard(&vec2D);
+    let (x, y, mut current_direction): (usize, usize, usize) = find_guard(&vec2D);
     let mut x_cur: isize = x.try_into().unwrap();
     let mut y_cur: isize = y.try_into().unwrap();
 
@@ -62,16 +64,19 @@ fn total_visited_distincts(vec2D: Vec<Vec<char>>) -> usize {
             break;
         }
 
-        // If theres a block, rotate 90 degrees and move forward
+        // If theres a block, rotate 90 degrees
         if vec2D[y_upcoming as usize][x_upcoming as usize] == '#' {
             current_direction = (current_direction + 1) % 4;
-            x_cur += direction[current_direction].0;
-            y_cur += direction[current_direction].1;
         } else {
             x_cur = x_upcoming;
             y_cur = y_upcoming;
         }
-        total_visited += 1;
+
+        // If is unvisited, add to total_visited places and mark as visited
+        if vec2D[y_cur as usize][x_cur as usize] == '.' {
+            total_visited += 1;
+            vec2D[y_cur as usize][x_cur as usize] = 'X';
+        }
     }
     return total_visited;
 }
