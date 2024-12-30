@@ -2,7 +2,7 @@
 I'll separate the problem into multible parts:
 1. Read file input and transform it into a 2D vector of chars
 2. get_char_cooridnates_from_2D_vec
-3. Find antenna pairs
+3. Is antinode possible, boolean function
 4. Add antinodes to the 2D vector
 5. Read the amount of antinodes as '#'
 =**return the sum**
