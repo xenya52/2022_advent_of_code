@@ -126,9 +126,50 @@ fn sum_of_all_antinodes(vec_2d: &Vec<Vec<char>>) -> usize {
     return antinode_positions.len();
 }
 
+// Debugging
+fn place_antinodes_in_grid(vec_2d: &mut Vec<Vec<char>>) {
+    let all_important_char_coordinates: Vec<Vec<(usize, usize)>> =
+        get_all_important_char_coordinates(vec_2d);
+
+    let mut antinode_positions: HashSet<(isize, isize)> = HashSet::new();
+
+    for char_coordinates in all_important_char_coordinates {
+        for i in 0..char_coordinates.len() {
+            for j in i + 1..char_coordinates.len() {
+                let antinode_positions_between_two =
+                    calculate_two_antinodes_position_between_two_antennas(
+                        char_coordinates[i],
+                        char_coordinates[j],
+                    );
+
+                for antinode in antinode_positions_between_two {
+                    if is_antinode_possible(antinode, vec_2d) {
+                        antinode_positions.insert(antinode);
+                    }
+                }
+            }
+        }
+    }
+
+    for &(x, y) in &antinode_positions {
+        vec_2d[y as usize][x as usize] = '#';
+    }
+}
+
 fn main() {
     let path: &str = "./../input.txt";
-    let vec_2d: Vec<Vec<char>> = read_input_to_vec(path);
-    let result: usize = sum_of_all_antinodes(&vec_2d);
-    println!("{}", result);
+    let mut vec_2d: Vec<Vec<char>> = read_input_to_vec(path);
+    for line in &vec_2d {
+        for c in line {
+            print!("{}", c);
+        }
+        println!();
+    }
+    place_antinodes_in_grid(&mut vec_2d);
+    for line in vec_2d {
+        for c in line {
+            print!("{}", c);
+        }
+        println!();
+    }
 }
